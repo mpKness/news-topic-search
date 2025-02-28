@@ -72,5 +72,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Search for news articles by topic.")
     parser.add_argument('--topic', type=str, help='The topic to search for')
     args = parser.parse_args()
+
+    # Print all arguments passed to the script
+    print(f"Arguments passed to the script: {args}")
+    
     entries_info = main(args.topic)
     print(json.dumps(entries_info, indent=2))
