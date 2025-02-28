@@ -3,8 +3,10 @@ from bs4 import BeautifulSoup
 from scraper import fetch_news, parse_news
 import feedparser
 from urllib.parse import urlparse
+import argparse
+import json
 
-def main():
+def main(topic=None):
     listOfAPIs = [ # TODO: most these apis needs some kinds of setup to connect to
         "https://newsapi.org/v2/top-headlines",
         "https://gnews.io/api/v4/top-headlines",
@@ -27,11 +29,12 @@ def main():
         "bbc.co.uk": {"data-component": "text-block"},
     }
 
-    topic = input("Enter the topic you want to search for: ")
+    if topic is None:
+        topic = input("Enter the topic you want to search for: ")
 
     filtered_entries = filter_rss_feeds(listOfRssFeeds, topic)
-    for idx, entry in enumerate(filtered_entries):
-        print(f"{idx + 1}. {entry.title}\n{entry.link}\n")
+    entries_info = [{"title": entry.title, "link": entry.link} for entry in filtered_entries]
+
 
     if filtered_entries:
         first_entry_url = filtered_entries[1].link
@@ -39,6 +42,8 @@ def main():
         tag = site_tags.get(base_url, {"data-component": "article-body"})  # Default to 'article-body' if the site is not in the dictionary
         full_article = fetch_full_article(first_entry_url, tag)
         print(f"Full article:\n{full_article}")
+
+    return entries_info
 
 def filter_rss_feeds(feeds, topic):
     filtered_entries = []
@@ -64,4 +69,8 @@ def fetch_full_article(url, tag):
         return "Failed to retrieve the full article"
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Search for news articles by topic.")
+    parser.add_argument('--topic', type=str, help='The topic to search for')
+    args = parser.parse_args()
+    entries_info = main(args.topic)
+    print(json.dumps(entries_info, indent=2))
