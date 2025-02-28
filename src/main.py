@@ -32,7 +32,7 @@ def main(topic=None):
     if topic is None:
         topic = input("Enter the topic you want to search for: ")
 
-    filtered_entries = filter_rss_feeds(listOfRssFeeds, topic)
+    filtered_entries, numberOfArticles = filter_rss_feeds(listOfRssFeeds, topic)
     entries_info = [{"title": entry.title, "link": entry.link} for entry in filtered_entries]
 
 
@@ -43,18 +43,19 @@ def main(topic=None):
         full_article = fetch_full_article(first_entry_url, tag)
         print(f"Full article:\n{full_article}")
 
-    return entries_info
+    return entries_info, numberOfArticles
 
 def filter_rss_feeds(feeds, topic):
     filtered_entries = []
+    numberOfEntries = 0
     for feed_url in feeds:
         feed = feedparser.parse(feed_url)
-        print(f"the number of entries{len(feed.entries)}")
+        numberOfEntries += len(feed.entries)
         for entry in feed.entries:
             if (hasattr(entry, 'title') and topic.lower() in entry.title.lower()) or \
                (hasattr(entry, 'description') and topic.lower() in entry.description.lower()):
                 filtered_entries.append(entry)
-    return filtered_entries
+    return filtered_entries, numberOfEntries
 
 def fetch_full_article(url, tag):
     response = requests.get(url)
@@ -73,8 +74,5 @@ if __name__ == "__main__":
     parser.add_argument('--topic', type=str, help='The topic to search for')
     args = parser.parse_args()
 
-    # Print all arguments passed to the script
-    print(f"Arguments passed to the script: {args}")
-    
-    entries_info = main(args.topic)
+    entries_info, numberOfArticles = main(args.topic)
     print(json.dumps(entries_info, indent=2))
