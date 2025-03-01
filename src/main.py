@@ -41,7 +41,6 @@ def main(topic=None):
         base_url = urlparse(first_entry_url).netloc
         tag = site_tags.get(base_url, {"data-component": "article-body"})  # Default to 'article-body' if the site is not in the dictionary
         full_article = fetch_full_article(first_entry_url, tag)
-        print(f"Full article:\n{full_article}")
 
     return entries_info, numberOfArticles
 
@@ -60,7 +59,6 @@ def filter_rss_feeds(feeds, topic):
 def fetch_full_article(url, tag):
     response = requests.get(url)
     if response.status_code == 200:
-        print(f"URL: {url}  TAG:{tag}")
         soup = BeautifulSoup(response.content, 'html.parser')
         # Extract text based on the provided tag
         elements = soup.find_all('p')
