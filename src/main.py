@@ -33,8 +33,13 @@ def main(topic=None):
         topic = input("Enter the topic you want to search for: ")
 
     filtered_entries, numberOfArticles = filter_rss_feeds(listOfRssFeeds, topic)
-    entries_info = [{"title": entry.title, "link": entry.link} for entry in filtered_entries]
-
+    entries_info = [
+        {
+            "title": entry.title,
+            "link": entry.link,
+            "published": entry.published,
+            "source": entry.source.title if hasattr(entry, 'source') else None
+        } for entry in filtered_entries]
 
     if filtered_entries:
         first_entry_url = filtered_entries[1].link
