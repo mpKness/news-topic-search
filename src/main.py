@@ -96,9 +96,9 @@ def fetch_full_article_by_tag(url, tag):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Search for news articles by topic.")
-    parser.add_argument('--topic', type=str, help='The topic to search for')
-    parser.add_argument('--to_file', type=bool, help='Save the output to a file')
-    parser.add_argument('--debug', type=bool, help='Add extra debug information')
+    parser.add_argument('--topic', type=str, help='The topic to search for', default=None)
+    parser.add_argument('--to_file', type=bool, help='Save the output to a file', default=False)
+    parser.add_argument('--debug', type=bool, help='Add extra debug information', default=False)
     args = parser.parse_args()
 
     entries_info, numberOfArticles = main(args.topic, args.debug)
