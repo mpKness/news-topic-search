@@ -55,7 +55,7 @@ def main(topic=None, debug=False):
                 "title": entry.title,
                 "link": entry.link,
                 "published": entry.published,
-                "source": entry.source.title if hasattr(entry, 'source') else None,
+                "source": entry.source.title if hasattr(entry, 'source') else '',
                 "base_url": base_url,
                 "full_article": full_article
             }
